@@ -30,6 +30,7 @@ class TableCalendarBase extends StatefulWidget {
   final AvailableGestures availableGestures;
   final SimpleSwipeConfig simpleSwipeConfig;
   final Map<CalendarFormat, String> availableCalendarFormats;
+  final Axis scrollDirection;
   final SwipeCallback? onVerticalSwipe;
   final void Function(DateTime focusedDay)? onPageChanged;
   final void Function(PageController pageController)? onCalendarCreated;
@@ -54,6 +55,7 @@ class TableCalendarBase extends StatefulWidget {
     this.pageAnimationEnabled = true,
     this.pageAnimationDuration = const Duration(milliseconds: 300),
     this.pageAnimationCurve = Curves.easeOut,
+    this.scrollDirection = Axis.horizontal,
     this.startingDayOfWeek = StartingDayOfWeek.sunday,
     this.availableGestures = AvailableGestures.all,
     this.simpleSwipeConfig = const SimpleSwipeConfig(
@@ -90,7 +92,10 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
     super.initState();
     _focusedDay = widget.focusedDay;
 
-    final rowCount = _getRowCount(widget.calendarFormat, _focusedDay);
+    final rowCount = widget.scrollDirection == Axis.horizontal
+        ? _getRowCount(widget.calendarFormat, _focusedDay)
+        : _getRowCount(widget.calendarFormat, _focusedDay) * 2;
+
     _pageHeight = ValueNotifier(_getPageHeight(rowCount));
 
     final initialPage = _calculateFocusedPage(
@@ -189,9 +194,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             builder: (context, value, child) {
               final height =
                   constraints.hasBoundedHeight ? constraints.maxHeight : value;
-
               return AnimatedSize(
-                vsync: this,
                 duration: widget.formatAnimationDuration,
                 curve: widget.formatAnimationCurve,
                 alignment: Alignment.topCenter,
@@ -204,6 +207,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             child: CalendarCore(
               constraints: constraints,
               pageController: _pageController,
+              scrollDirection: widget.scrollDirection,
               scrollPhysics: _canScrollHorizontally
                   ? PageScrollPhysics()
                   : NeverScrollableScrollPhysics(),

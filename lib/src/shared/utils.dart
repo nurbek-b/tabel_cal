@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/widgets.dart';
+import 'package:table_calendar/src/extansions/extansions.dart';
+import 'package:table_calendar/src/widgets/date_models.dart';
 
 /// Signature for a function that creates a widget for a given `day`.
 typedef DayBuilder = Widget? Function(BuildContext context, DateTime day);
@@ -52,3 +54,102 @@ bool isSameDay(DateTime? a, DateTime? b) {
 
   return a.year == b.year && a.month == b.month && a.day == b.day;
 }
+
+
+class CustomDateUtils {
+  static List<Month> extractWeeks(DateTime minDate, DateTime maxDate) {
+    DateTime weekMinDate = _findDayOfWeekInMonth(minDate, DateTime.monday);
+    DateTime weekMaxDate = _findDayOfWeekInMonth(maxDate, DateTime.sunday);
+
+    DateTime firstDayOfWeek = weekMinDate;
+    DateTime lastDayOfWeek = _lastDayOfWeek(weekMinDate);
+
+    if (!lastDayOfWeek.isBefore(weekMaxDate)) {
+      return <Month>[
+        Month(<Week>[Week(firstDayOfWeek, lastDayOfWeek)])
+      ];
+    } else {
+      List<Month> months = <Month>[];
+      List<Week> weeks = <Week>[];
+
+      while (lastDayOfWeek.isBefore(weekMaxDate)) {
+        Week week = Week(firstDayOfWeek, lastDayOfWeek);
+        weeks.add(week);
+
+        if (week.isLastWeekOfMonth) {
+          if (lastDayOfWeek.isSameDayOrAfter(minDate)) {
+            months.add(Month(weeks));
+          }
+
+          weeks = <Week>[];
+
+          firstDayOfWeek = firstDayOfWeek.toFirstDayOfNextMonth();
+          lastDayOfWeek = _lastDayOfWeek(firstDayOfWeek);
+
+          weeks.add(Week(firstDayOfWeek, lastDayOfWeek));
+        }
+
+        firstDayOfWeek = lastDayOfWeek.nextDay;
+        lastDayOfWeek = _lastDayOfWeek(firstDayOfWeek);
+      }
+
+      if (!lastDayOfWeek.isBefore(weekMaxDate)) {
+        weeks.add(Week(firstDayOfWeek, lastDayOfWeek));
+      }
+
+      months.add(Month(weeks));
+
+      return months;
+    }
+  }
+
+  static DateTime _lastDayOfWeek(DateTime firstDayOfWeek) {
+    int daysInMonth = firstDayOfWeek.daysInMonth;
+
+    if (firstDayOfWeek.day + 6 > daysInMonth) {
+      return DateTime(firstDayOfWeek.year, firstDayOfWeek.month, daysInMonth);
+    } else {
+      return firstDayOfWeek
+          .add(Duration(days: DateTime.sunday - firstDayOfWeek.weekday));
+    }
+  }
+
+  static DateTime _findDayOfWeekInMonth(DateTime date, int dayOfWeek) {
+    date = DateTime(date.year, date.month, date.day);
+
+    if (date.weekday == DateTime.monday) {
+      return date;
+    } else {
+      return date.subtract(Duration(days: date.weekday - dayOfWeek));
+    }
+  }
+
+  static List<int> daysPerMonth(int year) => <int>[
+        31,
+        isLeapYear(year) ? 29 : 28,
+        31,
+        30,
+        31,
+        30,
+        31,
+        31,
+        30,
+        31,
+        30,
+        31,
+      ];
+
+  static bool isLeapYear(int year) {
+    bool leapYear = false;
+
+    bool leap = ((year % 100 == 0) && (year % 400 != 0));
+    if (leap == true) {
+      return false;
+    } else if (year % 4 == 0) {
+      return true;
+    }
+
+    return leapYear;
+  }
+}
+

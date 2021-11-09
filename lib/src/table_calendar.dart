@@ -82,6 +82,9 @@ class TableCalendar<T> extends StatefulWidget {
   /// ```
   final Map<CalendarFormat, String> availableCalendarFormats;
 
+  /// Scroll Direction
+  final Axis scrollDirection;
+
   /// Determines the visibility of calendar header.
   final bool headerVisible;
 
@@ -242,6 +245,7 @@ class TableCalendar<T> extends StatefulWidget {
     this.calendarStyle = const CalendarStyle(),
     this.calendarBuilders = const CalendarBuilders(),
     this.rangeSelectionMode = RangeSelectionMode.toggledOff,
+    this.scrollDirection = Axis.horizontal,
     this.eventLoader,
     this.enabledDayPredicate,
     this.selectedDayPredicate,
@@ -340,6 +344,8 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
   }
 
   void _onDayTapped(DateTime day) {
+    print('My day tapped on');
+
     final isOutside = day.month != _focusedDay.value.month;
     if (isOutside && _shouldBlockOutsideDays) {
       return;
@@ -487,6 +493,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
             startingDayOfWeek: widget.startingDayOfWeek,
             dowDecoration: widget.daysOfWeekStyle.decoration,
             rowDecoration: widget.calendarStyle.rowDecoration,
+            scrollDirection: widget.scrollDirection,
             tableBorder: widget.calendarStyle.tableBorder,
             dowVisible: widget.daysOfWeekVisible,
             dowHeight: widget.daysOfWeekHeight,
