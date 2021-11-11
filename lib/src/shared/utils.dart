@@ -33,6 +33,7 @@ enum StartingDayOfWeek {
   sunday,
 }
 
+
 /// Returns a numerical value associated with given `weekday`.
 ///
 /// Returns 1 for `StartingDayOfWeek.monday`, all the way to 7 for `StartingDayOfWeek.sunday`.

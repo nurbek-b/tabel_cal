@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/src/extansions/extansions.dart';
 import 'package:table_calendar/src/widgets/date_models.dart';
 
 class VerticalMonthView extends StatelessWidget {
@@ -56,46 +55,25 @@ class VerticalMonthView extends StatelessWidget {
 
   TableRow _generateFor(BuildContext context, Week week) {
     DateTime firstDay = week.firstDay;
-    bool rangeFeatureEnabled = rangeMinDate != null;
 
     return TableRow(
-        children: List<Widget>.generate(DateTime.daysPerWeek, (int position) {
-      DateTime day = DateTime(week.firstDay.year, week.firstDay.month,
-          firstDay.day + (position - (firstDay.weekday - 1)));
-
-      if ((position + 1) < week.firstDay.weekday ||
-          (position + 1) > week.lastDay.weekday ||
-          day.isBefore(minDate) ||
-          day.isAfter(maxDate)) {
-        return const SizedBox();
-      } else {
-        bool isSelected = false;
-
-        if (rangeFeatureEnabled) {
-          if (rangeMinDate != null && rangeMaxDate != null) {
-            isSelected = day.isSameDayOrAfter(rangeMinDate!) &&
-                day.isSameDayOrBefore(rangeMaxDate!);
-          } else {
-            isSelected = day.isAtSameMomentAs(rangeMinDate!);
-          }
-        }
-
-        return AspectRatio(
-          aspectRatio: 1.0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: onDayPressed != null
-                ? () {
-                    if (onDayPressed != null) {
-                      onDayPressed!(day);
-                    }
-                  }
-                : null,
-            child: _DefaultDayView(date: day, isSelected: isSelected),
-          ),
+      children: List<Widget>.generate(DateTime.daysPerWeek, (int position) {
+        DateTime day = DateTime(
+          week.firstDay.year,
+          week.firstDay.month,
+          firstDay.day + (position - (firstDay.weekday - 1)),
         );
-      }
-    }, growable: false));
+
+        if ((position + 1) < week.firstDay.weekday ||
+            (position + 1) > week.lastDay.weekday ||
+            day.isBefore(minDate) ||
+            day.isAfter(maxDate)) {
+          return const SizedBox();
+        } else {
+          return dayBuilder(context, day);
+        }
+      }, growable: false),
+    );
   }
 }
 
@@ -112,27 +90,6 @@ class _DefaultMonthView extends StatelessWidget {
       child: Text(
         DateFormat('MMMM').format(DateTime(year, month)),
         style: Theme.of(context).textTheme.headline5,
-      ),
-    );
-  }
-}
-
-class _DefaultDayView extends StatelessWidget {
-  final DateTime date;
-  final bool isSelected;
-
-  _DefaultDayView({required this.date, this.isSelected = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Ink(
-      decoration: BoxDecoration(
-          color: isSelected == true ? Colors.red : Colors.transparent,
-          shape: BoxShape.circle),
-      child: Center(
-        child: Text(
-          DateFormat('d').format(date),
-        ),
       ),
     );
   }

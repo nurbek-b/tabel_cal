@@ -1,8 +1,6 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
-import 'dart:math';
-
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
@@ -13,7 +11,6 @@ import 'customization/days_of_week_style.dart';
 import 'customization/header_style.dart';
 import 'shared/utils.dart';
 import 'table_calendar_base.dart';
-import 'widgets/calendar_header.dart';
 import 'widgets/cell_content.dart';
 
 /// Signature for `onDaySelected` callback. Contains the selected day and focused day.
@@ -162,7 +159,7 @@ class TableCalendar<T> extends StatefulWidget {
   final RangeSelectionMode rangeSelectionMode;
 
   /// Function that assigns a list of events to a specified day.
-  final List<T> Function(DateTime day)? eventLoader;
+  final List<T> Function(DateTime day)? dayDataLoader;
 
   /// Function deciding whether given day should be enabled or not.
   /// If `false` is returned, this day will be disabled.
@@ -246,7 +243,7 @@ class TableCalendar<T> extends StatefulWidget {
     this.calendarBuilders = const CalendarBuilders(),
     this.rangeSelectionMode = RangeSelectionMode.toggledOff,
     this.scrollDirection = Axis.horizontal,
-    this.eventLoader,
+    this.dayDataLoader,
     this.enabledDayPredicate,
     this.selectedDayPredicate,
     this.holidayPredicate,
@@ -281,6 +278,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
   late final ValueNotifier<DateTime> _focusedDay;
   late RangeSelectionMode _rangeSelectionMode;
   DateTime? _firstSelectedDay;
+  DateTime? _lastSelectedDay;
 
   @override
   void initState() {
@@ -324,50 +322,34 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
       !widget.calendarStyle.outsideDaysVisible &&
       widget.calendarFormat == CalendarFormat.month;
 
-  void _swipeCalendarFormat(SwipeDirection direction) {
-    if (widget.onFormatChanged != null) {
-      final formats = widget.availableCalendarFormats.keys.toList();
-
-      final isSwipeUp = direction == SwipeDirection.up;
-      int id = formats.indexOf(widget.calendarFormat);
-
-      // Order of CalendarFormats must be from biggest to smallest,
-      // e.g.: [month, twoWeeks, week]
-      if (isSwipeUp) {
-        id = min(formats.length - 1, id + 1);
-      } else {
-        id = max(0, id - 1);
-      }
-
-      widget.onFormatChanged!(formats[id]);
-    }
-  }
-
   void _onDayTapped(DateTime day) {
-    print('My day tapped on');
-
     final isOutside = day.month != _focusedDay.value.month;
     if (isOutside && _shouldBlockOutsideDays) {
       return;
     }
-
     if (_isDayDisabled(day)) {
       return widget.onDisabledDayTapped?.call(day);
     }
-
     _updateFocusOnTap(day);
 
+    /// Range selection mode
     if (_isRangeSelectionOn && widget.onRangeSelected != null) {
       if (_firstSelectedDay == null) {
         _firstSelectedDay = day;
-        widget.onRangeSelected!(_firstSelectedDay, null, _focusedDay.value);
+        _lastSelectedDay = _firstSelectedDay!.add(Duration(days: 4));
+        widget.onRangeSelected!(
+            _firstSelectedDay, _lastSelectedDay, _focusedDay.value);
       } else {
-        if (day.isAfter(_firstSelectedDay!)) {
-          widget.onRangeSelected!(_firstSelectedDay, day, _focusedDay.value);
-          _firstSelectedDay = null;
-        } else if (day.isBefore(_firstSelectedDay!)) {
-          widget.onRangeSelected!(day, _firstSelectedDay, _focusedDay.value);
-          _firstSelectedDay = null;
+        if (day.isBefore(_firstSelectedDay!)) {
+        } else if (day.isAfter(_lastSelectedDay!)) {
+          _lastSelectedDay = day;
+          widget.onRangeSelected!(
+              _firstSelectedDay, _lastSelectedDay, _focusedDay.value);
+        } else if (day.isAfter(_firstSelectedDay!) &&
+            day.isBefore(_lastSelectedDay!)) {
+          _lastSelectedDay = day.subtract(Duration(days: 1));
+          widget.onRangeSelected!(
+              _firstSelectedDay, _lastSelectedDay, _focusedDay.value);
         }
       }
     } else {
@@ -433,51 +415,10 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
     }
   }
 
-  void _onLeftChevronTap() {
-    _pageController.previousPage(
-      duration: widget.pageAnimationDuration,
-      curve: widget.pageAnimationCurve,
-    );
-  }
-
-  void _onRightChevronTap() {
-    _pageController.nextPage(
-      duration: widget.pageAnimationDuration,
-      curve: widget.pageAnimationCurve,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.headerVisible)
-          ValueListenableBuilder<DateTime>(
-            valueListenable: _focusedDay,
-            builder: (context, value, _) {
-              return CalendarHeader(
-                headerTitleBuilder: widget.calendarBuilders.headerTitleBuilder,
-                focusedMonth: value,
-                onLeftChevronTap: _onLeftChevronTap,
-                onRightChevronTap: _onRightChevronTap,
-                onHeaderTap: () => widget.onHeaderTapped?.call(value),
-                onHeaderLongPress: () =>
-                    widget.onHeaderLongPressed?.call(value),
-                headerStyle: widget.headerStyle,
-                availableCalendarFormats: widget.availableCalendarFormats,
-                calendarFormat: widget.calendarFormat,
-                locale: widget.locale,
-                onFormatButtonTap: (format) {
-                  assert(
-                    widget.onFormatChanged != null,
-                    'Using `FormatButton` without providing `onFormatChanged` will have no effect.',
-                  );
-
-                  widget.onFormatChanged?.call(format);
-                },
-              );
-            },
-          ),
         Flexible(
           flex: widget.shouldFillViewport ? 1 : 0,
           child: TableCalendarBase(
@@ -490,6 +431,8 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
             availableGestures: widget.availableGestures,
             firstDay: widget.firstDay,
             lastDay: widget.lastDay,
+            months:
+                CustomDateUtils.extractWeeks(widget.firstDay, widget.lastDay),
             startingDayOfWeek: widget.startingDayOfWeek,
             dowDecoration: widget.daysOfWeekStyle.decoration,
             rowDecoration: widget.calendarStyle.rowDecoration,
@@ -506,7 +449,6 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
             availableCalendarFormats: widget.availableCalendarFormats,
             simpleSwipeConfig: widget.simpleSwipeConfig,
             sixWeekMonthsEnforced: widget.sixWeekMonthsEnforced,
-            onVerticalSwipe: _swipeCalendarFormat,
             onPageChanged: (focusedDay) {
               _focusedDay.value = focusedDay;
               widget.onPageChanged?.call(focusedDay);
@@ -623,15 +565,15 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
         children.add(content);
 
         if (!isDisabled) {
-          final events = widget.eventLoader?.call(day) ?? [];
+          final data = widget.dayDataLoader?.call(day) ?? [];
           Widget? markerWidget =
-              widget.calendarBuilders.markerBuilder?.call(context, day, events);
+              widget.calendarBuilders.markerBuilder?.call(context, day, data);
 
-          if (events.isNotEmpty && markerWidget == null) {
+          if (data.isNotEmpty && markerWidget == null) {
             final center = constraints.maxHeight / 2;
 
             final markerSize = widget.calendarStyle.markerSize ??
-                (shorterSide - widget.calendarStyle.cellMargin.vertical) *
+                (shorterSide - widget.calendarStyle.cellMargin.vertical * 2) *
                     widget.calendarStyle.markerSizeScale;
 
             final markerAutoAlignmentTop = center +
@@ -651,12 +593,13 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
               end: widget.calendarStyle.markersAutoAligned
                   ? null
                   : widget.calendarStyle.markersOffset.end,
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: events
-                    .take(widget.calendarStyle.markersMaxCount)
-                    .map((event) => _buildSingleMarker(day, event, markerSize))
-                    .toList(),
+                children: data.map((event) {
+                  print(event);
+
+                  return _buildSingleMarker(day, event, markerSize);
+                }).toList(),
               ),
             );
           }

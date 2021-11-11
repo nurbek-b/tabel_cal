@@ -430,7 +430,7 @@ void main() {
             firstDay: firstDay,
             lastDay: lastDay,
             currentDay: today,
-            eventLoader: (day) {
+            dayDataLoader: (day) {
               if (day.day == eventDay.day && day.month == eventDay.month) {
                 return ['Event 1', 'Event 2', 'Event 3'];
               }

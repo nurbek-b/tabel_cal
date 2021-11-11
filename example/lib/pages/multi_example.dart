@@ -14,7 +14,7 @@ class TableMultiExample extends StatefulWidget {
 }
 
 class _TableMultiExampleState extends State<TableMultiExample> {
-  final ValueNotifier<List<Event>> _selectedEvents = ValueNotifier([]);
+  final ValueNotifier<List<DateData>> _selectedEvents = ValueNotifier([]);
 
   // Using a `LinkedHashSet` is recommended due to equality comparison override
   final Set<DateTime> _selectedDays = LinkedHashSet<DateTime>(
@@ -31,12 +31,12 @@ class _TableMultiExampleState extends State<TableMultiExample> {
     super.dispose();
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
+  List<DateData> _getEventsForDay(DateTime day) {
     // Implementation example
-    return kEvents[day] ?? [];
+    return dateData[day] ?? [];
   }
 
-  List<Event> _getEventsForDays(Set<DateTime> days) {
+  List<DateData> _getEventsForDays(Set<DateTime> days) {
     // Implementation example
     // Note that days are in selection order (same applies to events)
     return [
@@ -66,12 +66,12 @@ class _TableMultiExampleState extends State<TableMultiExample> {
       ),
       body: Column(
         children: [
-          TableCalendar<Event>(
+          TableCalendar<DateData>(
             firstDay: kFirstDay,
             lastDay: kLastDay,
             focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
-            eventLoader: _getEventsForDay,
+            dayDataLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
             selectedDayPredicate: (day) {
               // Use values from Set to mark multiple days as selected
@@ -100,7 +100,7 @@ class _TableMultiExampleState extends State<TableMultiExample> {
           ),
           const SizedBox(height: 8.0),
           Expanded(
-            child: ValueListenableBuilder<List<Event>>(
+            child: ValueListenableBuilder<List<DateData>>(
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
                 return ListView.builder(

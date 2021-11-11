@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:table_calendar/src/widgets/date_models.dart';
 
 import 'shared/utils.dart';
 import 'widgets/calendar_core.dart';
@@ -11,6 +12,7 @@ class TableCalendarBase extends StatefulWidget {
   final DateTime firstDay;
   final DateTime lastDay;
   final DateTime focusedDay;
+  final List<Month> months;
   final CalendarFormat calendarFormat;
   final DayBuilder? dowBuilder;
   final FocusedDayBuilder dayBuilder;
@@ -40,6 +42,7 @@ class TableCalendarBase extends StatefulWidget {
     required this.firstDay,
     required this.lastDay,
     required this.focusedDay,
+    required this.months,
     this.calendarFormat = CalendarFormat.month,
     this.dowBuilder,
     required this.dayBuilder,
@@ -115,10 +118,10 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
     if (_focusedDay != widget.focusedDay ||
         widget.calendarFormat != oldWidget.calendarFormat ||
         widget.startingDayOfWeek != oldWidget.startingDayOfWeek) {
-      final shouldAnimate = _focusedDay != widget.focusedDay;
+      // final shouldAnimate = _focusedDay != widget.focusedDay;
 
       _focusedDay = widget.focusedDay;
-      _updatePage(shouldAnimate: shouldAnimate);
+      // _updatePage(shouldAnimate: false);
     }
 
     if (widget.rowHeight != oldWidget.rowHeight ||
@@ -193,7 +196,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             valueListenable: _pageHeight,
             builder: (context, value, child) {
               final height =
-                  constraints.hasBoundedHeight ? constraints.maxHeight : value;
+                  constraints.hasBoundedHeight ? double.infinity : value;
               return AnimatedSize(
                 duration: widget.formatAnimationDuration,
                 curve: widget.formatAnimationCurve,
@@ -208,11 +211,9 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
               constraints: constraints,
               pageController: _pageController,
               scrollDirection: widget.scrollDirection,
-              scrollPhysics: _canScrollHorizontally
-                  ? PageScrollPhysics()
-                  : NeverScrollableScrollPhysics(),
               firstDay: widget.firstDay,
               lastDay: widget.lastDay,
+              months: widget.months,
               startingDayOfWeek: widget.startingDayOfWeek,
               calendarFormat: widget.calendarFormat,
               previousIndex: _previousIndex,
