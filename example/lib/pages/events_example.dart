@@ -12,7 +12,7 @@ class TableEventsExample extends StatefulWidget {
 }
 
 class _TableEventsExampleState extends State<TableEventsExample> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
+  late final ValueNotifier<List<DateData>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff; // Can be toggled on/off by longpressing a date
@@ -35,12 +35,12 @@ class _TableEventsExampleState extends State<TableEventsExample> {
     super.dispose();
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
+  List<DateData> _getEventsForDay(DateTime day) {
     // Implementation example
-    return kEvents[day] ?? [];
+    return dateData[day] ?? [];
   }
 
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+  List<DateData> _getEventsForRange(DateTime start, DateTime end) {
     // Implementation example
     final days = daysInRange(start, end);
 
@@ -90,7 +90,7 @@ class _TableEventsExampleState extends State<TableEventsExample> {
       ),
       body: Column(
         children: [
-          TableCalendar<Event>(
+          TableCalendar<DateData>(
             firstDay: kFirstDay,
             lastDay: kLastDay,
             focusedDay: _focusedDay,
@@ -99,7 +99,7 @@ class _TableEventsExampleState extends State<TableEventsExample> {
             rangeEndDay: _rangeEnd,
             calendarFormat: _calendarFormat,
             rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: _getEventsForDay,
+            dayDataLoader: _getEventsForDay,
             startingDayOfWeek: StartingDayOfWeek.monday,
             calendarStyle: CalendarStyle(
               // Use `CalendarStyle` to customize the UI
@@ -120,7 +120,7 @@ class _TableEventsExampleState extends State<TableEventsExample> {
           ),
           const SizedBox(height: 8.0),
           Expanded(
-            child: ValueListenableBuilder<List<Event>>(
+            child: ValueListenableBuilder<List<DateData>>(
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
                 return ListView.builder(

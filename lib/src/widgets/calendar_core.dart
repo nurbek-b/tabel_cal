@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:table_calendar/src/widgets/calendar_list_view.dart';
+import 'package:table_calendar/src/widgets/date_models.dart';
 
 import '../shared/utils.dart';
 import 'calendar_page.dart';
@@ -29,6 +32,8 @@ class CalendarCore extends StatelessWidget {
   final PageController? pageController;
   final ScrollPhysics? scrollPhysics;
   final _OnCalendarPageChanged onPageChanged;
+  final Axis scrollDirection;
+  final List<Month> months;
 
   const CalendarCore({
     Key? key,
@@ -38,6 +43,7 @@ class CalendarCore extends StatelessWidget {
     required this.firstDay,
     required this.lastDay,
     required this.constraints,
+    required this.months,
     this.dowHeight,
     this.rowHeight,
     this.startingDayOfWeek = StartingDayOfWeek.sunday,
@@ -51,67 +57,140 @@ class CalendarCore extends StatelessWidget {
     this.rowDecoration,
     this.tableBorder,
     this.scrollPhysics,
+    this.scrollDirection = Axis.vertical,
   })  : assert(!dowVisible || (dowHeight != null && dowBuilder != null)),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: pageController,
-      physics: scrollPhysics,
-      itemCount: _getPageCount(calendarFormat, firstDay, lastDay),
-      itemBuilder: (context, index) {
-        final baseDay = _getBaseDay(calendarFormat, index);
-        final visibleRange = _getVisibleRange(calendarFormat, baseDay);
-        final visibleDays = _daysInRange(visibleRange.start, visibleRange.end);
+    if (scrollDirection == Axis.horizontal) {
+      return PageView.builder(
+        controller: pageController,
+        physics: scrollPhysics,
+        itemCount: _getPageCount(calendarFormat, firstDay, lastDay),
+        itemBuilder: (context, index) {
+          final baseDay = _getBaseDay(calendarFormat, index);
+          final visibleRange = _getVisibleRange(calendarFormat, baseDay);
+          final visibleDays =
+              _daysInRange(visibleRange.start, visibleRange.end);
 
-        final actualDowHeight = dowVisible ? dowHeight! : 0.0;
-        final constrainedRowHeight = constraints.hasBoundedHeight
-            ? (constraints.maxHeight - actualDowHeight) /
-                _getRowCount(calendarFormat, baseDay)
-            : null;
+          final actualDowHeight = dowVisible ? dowHeight! : 0.0;
+          final constrainedRowHeight = constraints.hasBoundedHeight
+              ? (constraints.maxHeight - actualDowHeight) /
+                  _getRowCount(calendarFormat, baseDay)
+              : null;
 
-        return CalendarPage(
-          visibleDays: visibleDays,
-          dowVisible: dowVisible,
-          dowDecoration: dowDecoration,
-          rowDecoration: rowDecoration,
-          tableBorder: tableBorder,
-          dowBuilder: (context, day) {
-            return SizedBox(
-              height: dowHeight,
-              child: dowBuilder?.call(context, day),
-            );
-          },
-          dayBuilder: (context, day) {
-            DateTime baseDay;
-            final previousFocusedDay = focusedDay;
-            if (previousFocusedDay == null || previousIndex == null) {
-              baseDay = _getBaseDay(calendarFormat, index);
-            } else {
-              baseDay =
-                  _getFocusedDay(calendarFormat, previousFocusedDay, index);
-            }
+          return CalendarPage(
+            visibleDays: visibleDays,
+            dowVisible: dowVisible,
+            dowDecoration: dowDecoration,
+            rowDecoration: rowDecoration,
+            tableBorder: tableBorder,
+            dowBuilder: (context, day) {
+              return SizedBox(
+                height: dowHeight,
+                child: dowBuilder?.call(context, day),
+              );
+            },
+            dayBuilder: (context, day) {
+              DateTime baseDay;
+              final previousFocusedDay = focusedDay;
+              if (previousFocusedDay == null || previousIndex == null) {
+                baseDay = _getBaseDay(calendarFormat, index);
+              } else {
+                baseDay =
+                    _getFocusedDay(calendarFormat, previousFocusedDay, index);
+              }
 
-            return SizedBox(
-              height: constrainedRowHeight ?? rowHeight,
-              child: dayBuilder(context, day, baseDay),
-            );
-          },
-        );
-      },
-      onPageChanged: (index) {
-        DateTime baseDay;
-        final previousFocusedDay = focusedDay;
-        if (previousFocusedDay == null || previousIndex == null) {
-          baseDay = _getBaseDay(calendarFormat, index);
-        } else {
-          baseDay = _getFocusedDay(calendarFormat, previousFocusedDay, index);
-        }
+              return SizedBox(
+                height: constrainedRowHeight ?? rowHeight,
+                child: dayBuilder(context, day, baseDay),
+              );
+            },
+          );
+        },
+        onPageChanged: (index) {
+          DateTime baseDay;
+          final previousFocusedDay = focusedDay;
+          if (previousFocusedDay == null || previousIndex == null) {
+            baseDay = _getBaseDay(calendarFormat, index);
+          } else {
+            baseDay = _getFocusedDay(calendarFormat, previousFocusedDay, index);
+          }
 
-        return onPageChanged(index, baseDay);
-      },
-    );
+          return onPageChanged(index, baseDay);
+        },
+      );
+    } else {
+      return Column(
+        children: [
+          SizedBox(
+            height: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text('S', style: TextStyle(fontSize: 10)),
+                Text('M', style: TextStyle(fontSize: 10)),
+                Text('T', style: TextStyle(fontSize: 10)),
+                Text('W', style: TextStyle(fontSize: 10)),
+                Text('T', style: TextStyle(fontSize: 10)),
+                Text('F', style: TextStyle(fontSize: 10)),
+                Text('S', style: TextStyle(fontSize: 10)),
+              ],
+            ),
+          ),
+          Divider(),
+          Flexible(
+            child: ListView.builder(
+                cacheExtent:
+                    (MediaQuery.of(context).size.width / DateTime.daysPerWeek) *
+                        6,
+                controller: pageController,
+                itemCount: months.length,
+                itemBuilder: (BuildContext context, int position) {
+                  final baseDay = _getBaseDay(calendarFormat, position);
+                  final visibleRange =
+                      _getVisibleRange(calendarFormat, baseDay);
+                  final visibleDays =
+                      _daysInRange(visibleRange.start, visibleRange.end);
+                  final actualDowHeight = dowHeight!;
+                  final constrainedRowHeight = constraints.hasBoundedHeight
+                      ? (constraints.maxHeight - actualDowHeight) /
+                          _getRowCount(calendarFormat, baseDay)
+                      : null;
+
+                  return VerticalMonthView(
+                    month: months[position],
+                    minDate: firstDay,
+                    maxDate: lastDay,
+                    visibleDays: visibleDays,
+                    dowBuilder: (context, day) {
+                      return SizedBox(
+                        height: dowHeight,
+                        child: dowBuilder?.call(context, day),
+                      );
+                    },
+                    dayBuilder: (context, day) {
+                      DateTime baseDay;
+                      final previousFocusedDay = focusedDay;
+                      if (previousFocusedDay == null || previousIndex == null) {
+                        baseDay = _getBaseDay(calendarFormat, position);
+                      } else {
+                        baseDay = _getFocusedDay(
+                            calendarFormat, previousFocusedDay, position);
+                      }
+
+                      return Container(
+                        height: constrainedRowHeight ?? rowHeight,
+                        child: dayBuilder(context, day, baseDay),
+                      );
+                    },
+                  );
+                }),
+          ),
+        ],
+      );
+    }
   }
 
   int _getPageCount(CalendarFormat format, DateTime first, DateTime last) {

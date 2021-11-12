@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:table_calendar/src/widgets/date_models.dart';
 
 import 'shared/utils.dart';
 import 'widgets/calendar_core.dart';
@@ -11,6 +12,7 @@ class TableCalendarBase extends StatefulWidget {
   final DateTime firstDay;
   final DateTime lastDay;
   final DateTime focusedDay;
+  final List<Month> months;
   final CalendarFormat calendarFormat;
   final DayBuilder? dowBuilder;
   final FocusedDayBuilder dayBuilder;
@@ -30,6 +32,7 @@ class TableCalendarBase extends StatefulWidget {
   final AvailableGestures availableGestures;
   final SimpleSwipeConfig simpleSwipeConfig;
   final Map<CalendarFormat, String> availableCalendarFormats;
+  final Axis scrollDirection;
   final SwipeCallback? onVerticalSwipe;
   final void Function(DateTime focusedDay)? onPageChanged;
   final void Function(PageController pageController)? onCalendarCreated;
@@ -39,6 +42,7 @@ class TableCalendarBase extends StatefulWidget {
     required this.firstDay,
     required this.lastDay,
     required this.focusedDay,
+    required this.months,
     this.calendarFormat = CalendarFormat.month,
     this.dowBuilder,
     required this.dayBuilder,
@@ -54,6 +58,7 @@ class TableCalendarBase extends StatefulWidget {
     this.pageAnimationEnabled = true,
     this.pageAnimationDuration = const Duration(milliseconds: 300),
     this.pageAnimationCurve = Curves.easeOut,
+    this.scrollDirection = Axis.horizontal,
     this.startingDayOfWeek = StartingDayOfWeek.sunday,
     this.availableGestures = AvailableGestures.all,
     this.simpleSwipeConfig = const SimpleSwipeConfig(
@@ -90,7 +95,10 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
     super.initState();
     _focusedDay = widget.focusedDay;
 
-    final rowCount = _getRowCount(widget.calendarFormat, _focusedDay);
+    final rowCount = widget.scrollDirection == Axis.horizontal
+        ? _getRowCount(widget.calendarFormat, _focusedDay)
+        : _getRowCount(widget.calendarFormat, _focusedDay) * 2;
+
     _pageHeight = ValueNotifier(_getPageHeight(rowCount));
 
     final initialPage = _calculateFocusedPage(
@@ -110,10 +118,10 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
     if (_focusedDay != widget.focusedDay ||
         widget.calendarFormat != oldWidget.calendarFormat ||
         widget.startingDayOfWeek != oldWidget.startingDayOfWeek) {
-      final shouldAnimate = _focusedDay != widget.focusedDay;
+      // final shouldAnimate = _focusedDay != widget.focusedDay;
 
       _focusedDay = widget.focusedDay;
-      _updatePage(shouldAnimate: shouldAnimate);
+      // _updatePage(shouldAnimate: false);
     }
 
     if (widget.rowHeight != oldWidget.rowHeight ||
@@ -188,10 +196,8 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             valueListenable: _pageHeight,
             builder: (context, value, child) {
               final height =
-                  constraints.hasBoundedHeight ? constraints.maxHeight : value;
-
+                  constraints.hasBoundedHeight ? double.infinity : value;
               return AnimatedSize(
-                vsync: this,
                 duration: widget.formatAnimationDuration,
                 curve: widget.formatAnimationCurve,
                 alignment: Alignment.topCenter,
@@ -204,11 +210,10 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             child: CalendarCore(
               constraints: constraints,
               pageController: _pageController,
-              scrollPhysics: _canScrollHorizontally
-                  ? PageScrollPhysics()
-                  : NeverScrollableScrollPhysics(),
+              scrollDirection: widget.scrollDirection,
               firstDay: widget.firstDay,
               lastDay: widget.lastDay,
+              months: widget.months,
               startingDayOfWeek: widget.startingDayOfWeek,
               calendarFormat: widget.calendarFormat,
               previousIndex: _previousIndex,
