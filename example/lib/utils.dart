@@ -42,6 +42,10 @@ final _dateDataSource = Map.fromIterable(List.generate(50, (index) => index),
       DateData('Today\'s Data 1', sex: true),
       DateData('Today\'s Data 2', symptomsAdded: true),
     ],
+    kToday.subtract(Duration(days: 1)): [
+      DateData('Today\'s Data 1', sex: true),
+      DateData('Today\'s Data 2', symptomsAdded: true),
+    ],
   });
 
 int getHashCode(DateTime key) {

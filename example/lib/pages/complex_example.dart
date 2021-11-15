@@ -129,6 +129,8 @@ class _TableComplexExampleState extends State<TableComplexExample> {
             rangeStartTextStyle: TextStyle(color: Color(0xffFF9494)),
             rangeEndTextStyle: TextStyle(color: Color(0xffFF9494)),
             withinRangeTextStyle: TextStyle(color: Color(0xffFF9494)),
+            fertilityTextStyle: TextStyle(color: Color(0xffFCB54C)),
+            periodDaysTextStyle: TextStyle(color: Color(0xffFF9494)),
             rangeStartDecoration:
                 const BoxDecoration(color: Colors.transparent),
             rangeEndDecoration: const BoxDecoration(color: Colors.transparent),
@@ -136,35 +138,33 @@ class _TableComplexExampleState extends State<TableComplexExample> {
           calendarBuilders: CalendarBuilders(
             singleMarkerBuilder: (context, date, data) {
               final children = <Widget>[];
-              if (data.periodDays)
-                if (!children.contains(Text('.', style: TextStyle(color: Colors.black)))) {
-                  children.add(
-                    Text('.', style: TextStyle(color: Colors.black)),
-                  );
-                }
+              if (data.periodDays) if (!children
+                  .contains(Text('.', style: TextStyle(color: Colors.black)))) {
+                children.add(
+                  Text('.', style: TextStyle(color: Colors.black)),
+                );
+              }
 
-              if (data.sex)
-                if (!children.contains(Text(',', style: TextStyle(color: Colors.black)))) {
-                  children.add(
-                    Text(',', style: TextStyle(color: Colors.black)),
-                  );
-                }
+              if (data.sex) if (!children
+                  .contains(Text(',', style: TextStyle(color: Colors.black)))) {
+                children.add(
+                  Text(',', style: TextStyle(color: Colors.black)),
+                );
+              }
 
-              if (data.symptomsAdded)
-                if (!children.contains(Text('_', style: TextStyle(color: Colors.black)))) {
-                  children.add(
-                    Text('_', style: TextStyle(color: Colors.black)),
-                  );
-                }
+              if (data.symptomsAdded) if (!children
+                  .contains(Text('_', style: TextStyle(color: Colors.black)))) {
+                children.add(
+                  Text('_', style: TextStyle(color: Colors.black)),
+                );
+              }
 
-              if (data.ovulationDay)
-                if (!children.contains(Text('=', style: TextStyle(color: Colors.black)))) {
-                  children.add(
-                    Text('=', style: TextStyle(color: Colors.black)),
-                  );
-                }
-
-
+              if (data.ovulationDay) if (!children
+                  .contains(Text('=', style: TextStyle(color: Colors.black)))) {
+                children.add(
+                  Text('=', style: TextStyle(color: Colors.black)),
+                );
+              }
 
               return Column(
                   mainAxisSize: MainAxisSize.min,

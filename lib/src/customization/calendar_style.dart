@@ -130,6 +130,12 @@ class CalendarStyle {
   /// TextStyle for day cells that match `weekendDay` list.
   final TextStyle weekendTextStyle;
 
+  /// Fertility days text style
+  final TextStyle fertilityTextStyle;
+
+  /// Period days text style
+  final TextStyle periodDaysTextStyle;
+
   /// Decoration for day cells that match `weekendDay` list.
   final Decoration weekendDecoration;
 
@@ -144,7 +150,7 @@ class CalendarStyle {
 
   /// Border for the internal `Table` widget.
   final TableBorder tableBorder;
-  
+
   /// Creates a `CalendarStyle` used by `TableCalendar` widget.
   const CalendarStyle({
     this.isTodayHighlighted = true,
@@ -213,6 +219,8 @@ class CalendarStyle {
       shape: BoxShape.circle,
     ),
     this.weekendTextStyle = const TextStyle(color: const Color(0xFF5A5A5A)),
+    this.fertilityTextStyle = const TextStyle(color: const Color(0xFF5A5A5A)),
+    this.periodDaysTextStyle = const TextStyle(color: const Color(0xFF5A5A5A)),
     this.weekendDecoration = const BoxDecoration(shape: BoxShape.circle),
     this.defaultTextStyle = const TextStyle(),
     this.defaultDecoration = const BoxDecoration(shape: BoxShape.circle),

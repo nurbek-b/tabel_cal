@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
+import 'package:table_calendar/src/customization/fertility_day_style.dart';
 
 import 'customization/calendar_builders.dart';
 import 'customization/calendar_style.dart';
@@ -208,6 +209,10 @@ class TableCalendar<T> extends StatefulWidget {
   /// Week days text style
   final TextStyle weekTextStyle;
 
+  final List<DateTime> fertilityDays;
+
+  final List<DateTime> periodDays;
+
   /// Creates a `TableCalendar` widget.
   TableCalendar({
     Key? key,
@@ -219,6 +224,8 @@ class TableCalendar<T> extends StatefulWidget {
     this.rangeStartDay,
     this.rangeEndDay,
     this.weekendDays = const [DateTime.saturday, DateTime.sunday],
+    this.fertilityDays = const [],
+    this.periodDays = const [],
     this.calendarFormat = CalendarFormat.month,
     this.availableCalendarFormats = const {
       CalendarFormat.month: 'Month',
@@ -553,6 +560,9 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
         final isToday = isSameDay(day, widget.currentDay);
         final isDisabled = _isDayDisabled(day);
         final isWeekend = _isWeekend(day, weekendDays: widget.weekendDays);
+        final isFertility =
+            _isFertilityDay(day, fertilityDays: widget.fertilityDays);
+        final isPeriod = _isPeriodDay(day, periodDays: widget.periodDays);
 
         Widget content = CellContent(
           key: ValueKey('CellContent-${day.year}-${day.month}-${day.day}'),
@@ -569,6 +579,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
           isOutside: isOutside,
           isDisabled: isDisabled,
           isWeekend: isWeekend,
+          isFertility: isFertility,
           isHoliday: widget.holidayPredicate?.call(day) ?? false,
           locale: widget.locale,
         );
@@ -710,5 +721,19 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
     List<int> weekendDays = const [DateTime.saturday, DateTime.sunday],
   }) {
     return weekendDays.contains(day.weekday);
+  }
+
+  bool _isFertilityDay(
+    DateTime day, {
+    List<DateTime> fertilityDays = const [],
+  }) {
+    return fertilityDays.contains(day);
+  }
+
+  bool _isPeriodDay(
+    DateTime day, {
+    List<DateTime> periodDays = const [],
+  }) {
+    return periodDays.contains(day);
   }
 }
