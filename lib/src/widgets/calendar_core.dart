@@ -21,6 +21,8 @@ class CalendarCore extends StatelessWidget {
   final FocusedDayBuilder dayBuilder;
   final bool sixWeekMonthsEnforced;
   final bool dowVisible;
+  final TextStyle monthTextStyle;
+  final TextStyle weekTextStyle;
   final Decoration? dowDecoration;
   final Decoration? rowDecoration;
   final TableBorder? tableBorder;
@@ -53,6 +55,8 @@ class CalendarCore extends StatelessWidget {
     this.previousIndex,
     this.sixWeekMonthsEnforced = false,
     this.dowVisible = true,
+    this.monthTextStyle = const TextStyle(),
+    this.weekTextStyle = const TextStyle(),
     this.dowDecoration,
     this.rowDecoration,
     this.tableBorder,
@@ -125,17 +129,17 @@ class CalendarCore extends StatelessWidget {
       return Column(
         children: [
           SizedBox(
-            height: 20,
+            height: 14,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text('S', style: TextStyle(fontSize: 10)),
-                Text('M', style: TextStyle(fontSize: 10)),
-                Text('T', style: TextStyle(fontSize: 10)),
-                Text('W', style: TextStyle(fontSize: 10)),
-                Text('T', style: TextStyle(fontSize: 10)),
-                Text('F', style: TextStyle(fontSize: 10)),
-                Text('S', style: TextStyle(fontSize: 10)),
+                Text('S', style: weekTextStyle),
+                Text('M', style: weekTextStyle),
+                Text('T', style: weekTextStyle),
+                Text('W', style: weekTextStyle),
+                Text('T', style: weekTextStyle),
+                Text('F', style: weekTextStyle),
+                Text('S', style: weekTextStyle),
               ],
             ),
           ),
@@ -164,6 +168,7 @@ class CalendarCore extends StatelessWidget {
                     minDate: firstDay,
                     maxDate: lastDay,
                     visibleDays: visibleDays,
+                    monthTextStyle: monthTextStyle,
                     dowBuilder: (context, day) {
                       return SizedBox(
                         height: dowHeight,

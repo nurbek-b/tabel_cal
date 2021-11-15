@@ -1,6 +1,7 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
@@ -201,6 +202,12 @@ class TableCalendar<T> extends StatefulWidget {
   /// Called when the calendar is created. Exposes its PageController.
   final void Function(PageController pageController)? onCalendarCreated;
 
+  /// Month text Style
+  final TextStyle monthTextStyle;
+
+  /// Week days text style
+  final TextStyle weekTextStyle;
+
   /// Creates a `TableCalendar` widget.
   TableCalendar({
     Key? key,
@@ -237,6 +244,8 @@ class TableCalendar<T> extends StatefulWidget {
       verticalThreshold: 25.0,
       swipeDetectionBehavior: SwipeDetectionBehavior.continuousDistinct,
     ),
+    this.weekTextStyle = const TextStyle(),
+    this.monthTextStyle = const TextStyle(),
     this.headerStyle = const HeaderStyle(),
     this.daysOfWeekStyle = const DaysOfWeekStyle(),
     this.calendarStyle = const CalendarStyle(),
@@ -441,6 +450,8 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
             dowVisible: widget.daysOfWeekVisible,
             dowHeight: widget.daysOfWeekHeight,
             rowHeight: widget.rowHeight,
+            monthTextStyle: widget.monthTextStyle,
+            weekTextStyle: widget.weekTextStyle,
             formatAnimationDuration: widget.formatAnimationDuration,
             formatAnimationCurve: widget.formatAnimationCurve,
             pageAnimationEnabled: widget.pageAnimationEnabled,
@@ -595,10 +606,10 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
                   : widget.calendarStyle.markersOffset.end,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: data.map((event) {
-                  print(event);
+                children: data.map((data) {
+                  print(data);
 
-                  return _buildSingleMarker(day, event, markerSize);
+                  return _buildSingleMarker(day, data, markerSize);
                 }).toList(),
               ),
             );
@@ -608,6 +619,8 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
             children.add(markerWidget);
           }
         }
+
+        children.add(Align(alignment: Alignment.topCenter, child: Divider()));
 
         return Stack(
           alignment: widget.calendarStyle.markersAlignment,

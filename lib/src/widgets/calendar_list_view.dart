@@ -12,6 +12,7 @@ class VerticalMonthView extends StatelessWidget {
   final Decoration? dowDecoration;
   final Decoration? rowDecoration;
   final TableBorder? tableBorder;
+  final TextStyle monthTextStyle;
   final ValueChanged<DateTime>? onDayPressed;
   final bool dowVisible;
   final List<DateTime> visibleDays;
@@ -24,6 +25,7 @@ class VerticalMonthView extends StatelessWidget {
     required this.maxDate,
     required this.dayBuilder,
     required this.visibleDays,
+    this.monthTextStyle = const TextStyle(),
     this.dowDecoration,
     this.rowDecoration,
     this.dowBuilder,
@@ -43,8 +45,11 @@ class VerticalMonthView extends StatelessWidget {
       children: <Widget>[
         // monthBuilder != null
         //     ? monthBuilder!(context, month.month, month.year)
-        //     : 
-            _DefaultMonthView(month: month.month, year: month.year),
+        //     :
+        _DefaultMonthView(
+            month: month.month,
+            year: month.year,
+            monthTextStyle: monthTextStyle),
         Table(
           children: month.weeks
               .map((Week week) => _generateFor(context, week))
@@ -81,16 +86,21 @@ class VerticalMonthView extends StatelessWidget {
 class _DefaultMonthView extends StatelessWidget {
   final int month;
   final int year;
+  final TextStyle monthTextStyle;
 
-  _DefaultMonthView({required this.month, required this.year});
+  _DefaultMonthView({
+    required this.month,
+    required this.year,
+    this.monthTextStyle = const TextStyle(),
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        DateFormat('MMMM').format(DateTime(year, month)),
-        style: Theme.of(context).textTheme.headline5,
+        DateFormat('MMMM yyyy').format(DateTime(year, month)),
+        style: monthTextStyle,
       ),
     );
   }

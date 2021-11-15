@@ -20,6 +20,8 @@ class TableCalendarBase extends StatefulWidget {
   final double rowHeight;
   final bool sixWeekMonthsEnforced;
   final bool dowVisible;
+  final TextStyle monthTextStyle;
+  final TextStyle weekTextStyle;
   final Decoration? dowDecoration;
   final Decoration? rowDecoration;
   final TableBorder? tableBorder;
@@ -50,6 +52,8 @@ class TableCalendarBase extends StatefulWidget {
     required this.rowHeight,
     this.sixWeekMonthsEnforced = false,
     this.dowVisible = true,
+    this.monthTextStyle = const TextStyle(),
+    this.weekTextStyle = const TextStyle(),
     this.dowDecoration,
     this.rowDecoration,
     this.tableBorder,
@@ -214,6 +218,8 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
               firstDay: widget.firstDay,
               lastDay: widget.lastDay,
               months: widget.months,
+              monthTextStyle: widget.monthTextStyle,
+              weekTextStyle: widget.weekTextStyle,
               startingDayOfWeek: widget.startingDayOfWeek,
               calendarFormat: widget.calendarFormat,
               previousIndex: _previousIndex,
