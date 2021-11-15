@@ -90,6 +90,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
     with SingleTickerProviderStateMixin {
   late final ValueNotifier<double> _pageHeight;
   late final PageController _pageController;
+  late final ScrollController _scrollController;
   late DateTime _focusedDay;
   late int _previousIndex;
   late bool _pageCallbackDisabled;
@@ -103,12 +104,16 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
         ? _getRowCount(widget.calendarFormat, _focusedDay)
         : _getRowCount(widget.calendarFormat, _focusedDay) * 2;
 
+    final weeksTillToday = _getWeekCount(widget.firstDay, widget.focusedDay);
+
     _pageHeight = ValueNotifier(_getPageHeight(rowCount));
 
     final initialPage = _calculateFocusedPage(
         widget.calendarFormat, widget.firstDay, _focusedDay);
 
     _pageController = PageController(initialPage: initialPage);
+    _scrollController =
+        ScrollController(initialScrollOffset: weeksTillToday * 68.0);
     widget.onCalendarCreated?.call(_pageController);
 
     _previousIndex = initialPage;
@@ -214,6 +219,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             child: CalendarCore(
               constraints: constraints,
               pageController: _pageController,
+              scrollController: _scrollController,
               scrollDirection: widget.scrollDirection,
               firstDay: widget.firstDay,
               lastDay: widget.lastDay,

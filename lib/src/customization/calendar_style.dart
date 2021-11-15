@@ -81,7 +81,7 @@ class CalendarStyle {
   final TextStyle selectedTextStyle;
 
   /// Decoration for day cells that are currently marked as selected by `selectedDayPredicate`.
-  final Decoration selectedDecoration;
+  final Decoration? selectedDecoration;
 
   /// TextStyle for a day cell that is the start of current range selection.
   final TextStyle rangeStartTextStyle;
@@ -185,10 +185,7 @@ class CalendarStyle {
       color: const Color(0xFFFAFAFA),
       fontSize: 16.0,
     ),
-    this.selectedDecoration = const BoxDecoration(
-      color: const Color(0xFF5C6BC0),
-      shape: BoxShape.circle,
-    ),
+    this.selectedDecoration,
     this.rangeStartTextStyle = const TextStyle(
       color: const Color(0xFFFAFAFA),
       fontSize: 16.0,

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
-import 'package:table_calendar/src/customization/fertility_day_style.dart';
-
 import 'customization/calendar_builders.dart';
 import 'customization/calendar_style.dart';
 import 'customization/days_of_week_style.dart';

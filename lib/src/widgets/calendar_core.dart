@@ -32,6 +32,7 @@ class CalendarCore extends StatelessWidget {
   final int? previousIndex;
   final StartingDayOfWeek startingDayOfWeek;
   final PageController? pageController;
+  final ScrollController? scrollController;
   final ScrollPhysics? scrollPhysics;
   final _OnCalendarPageChanged onPageChanged;
   final Axis scrollDirection;
@@ -51,6 +52,7 @@ class CalendarCore extends StatelessWidget {
     this.startingDayOfWeek = StartingDayOfWeek.sunday,
     this.calendarFormat = CalendarFormat.month,
     this.pageController,
+    this.scrollController,
     this.focusedDay,
     this.previousIndex,
     this.sixWeekMonthsEnforced = false,
@@ -149,7 +151,7 @@ class CalendarCore extends StatelessWidget {
                 cacheExtent:
                     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) *
                         6,
-                controller: pageController,
+                controller: scrollController,
                 itemCount: months.length,
                 itemBuilder: (BuildContext context, int position) {
                   final baseDay = _getBaseDay(calendarFormat, position);

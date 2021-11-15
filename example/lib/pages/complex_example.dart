@@ -101,8 +101,8 @@ class _TableComplexExampleState extends State<TableComplexExample> {
       body: Container(
         padding: EdgeInsets.only(top: 24, left: 12, right: 12),
         child: TableCalendar<DateData>(
-          firstDay: DateTime(today.year - 1, today.month, today.day),
-          lastDay: DateTime(today.year, today.month + 1, today.day),
+          firstDay: DateTime(today.year - 2, today.month, today.day),
+          lastDay: DateTime(today.year + 2, today.month, today.day),
           focusedDay: _focusedDay.value,
           headerVisible: false,
           selectedDayPredicate: (day) => _selectedDays.contains(day),
@@ -122,7 +122,9 @@ class _TableComplexExampleState extends State<TableComplexExample> {
             }
           },
           calendarStyle: CalendarStyle(
-            isTodayHighlighted: false,
+            isTodayHighlighted: true,
+            todayTextStyle:
+                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             selectedDecoration: const BoxDecoration(color: Colors.transparent),
             rangeHighlightScale: 0.0,
             selectedTextStyle: TextStyle(color: Color(0xffFF9494)),
