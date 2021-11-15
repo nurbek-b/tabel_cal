@@ -144,13 +144,7 @@ class CalendarStyle {
 
   /// Border for the internal `Table` widget.
   final TableBorder tableBorder;
-
-  /// month text style
-  final TextStyle monthTextStyle;
-
-  /// week textStyle
-  final TextStyle weekTextStyle;
-
+  
   /// Creates a `CalendarStyle` used by `TableCalendar` widget.
   const CalendarStyle({
     this.isTodayHighlighted = true,
@@ -201,8 +195,6 @@ class CalendarStyle {
       color: const Color(0xFFFAFAFA),
       fontSize: 16.0,
     ),
-    this.monthTextStyle = const TextStyle(color: const Color(0xFF000000), fontSize: 16.0,),
-    this.weekTextStyle = const TextStyle(color: const Color(0xFF000000), fontSize: 16.0,),
     this.rangeEndDecoration = const BoxDecoration(
       color: const Color(0xFF6699FF),
       shape: BoxShape.circle,

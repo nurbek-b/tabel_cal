@@ -620,7 +620,15 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
           }
         }
 
-        children.add(Align(alignment: Alignment.topCenter, child: Divider()));
+        children.add(
+          Align(
+            alignment: Alignment.topCenter,
+            child: Divider(
+              thickness: 1,
+              color: Colors.grey,
+            ),
+          ),
+        );
 
         return Stack(
           alignment: widget.calendarStyle.markersAlignment,

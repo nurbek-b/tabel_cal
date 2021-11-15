@@ -92,26 +92,6 @@ class _TableComplexExampleState extends State<TableComplexExample> {
     }
   }
 
-  AnimatedContainer buildCalendarDayMarker({
-    required String text,
-    required String icon,
-  }) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      width: 52,
-      height: 13,
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle().copyWith(
-            color: Colors.white,
-            fontSize: 10.0,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

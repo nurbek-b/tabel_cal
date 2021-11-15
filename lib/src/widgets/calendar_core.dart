@@ -144,7 +144,7 @@ class CalendarCore extends StatelessWidget {
             ),
           ),
           Divider(),
-          SingleChildScrollView(
+          Expanded(
             child: ListView.builder(
                 cacheExtent:
                     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) *

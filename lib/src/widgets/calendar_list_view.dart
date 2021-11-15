@@ -43,9 +43,9 @@ class VerticalMonthView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        // monthBuilder != null
-        //     ? monthBuilder!(context, month.month, month.year)
-        //     :
+        monthBuilder != null
+            ? monthBuilder!(context, month.month, month.year)
+            :
         _DefaultMonthView(
             month: month.month,
             year: month.year,
