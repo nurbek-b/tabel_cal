@@ -580,6 +580,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
           isDisabled: isDisabled,
           isWeekend: isWeekend,
           isFertility: isFertility,
+          isPeriod: isPeriod,
           isHoliday: widget.holidayPredicate?.call(day) ?? false,
           locale: widget.locale,
         );
