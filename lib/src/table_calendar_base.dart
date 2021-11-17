@@ -115,7 +115,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
 
     _pageController = PageController(initialPage: initialPage);
     _scrollController =
-        ScrollController(initialScrollOffset: weeksTillToday * (widget.cellHeight + 10.0));
+        ScrollController(initialScrollOffset: weeksTillToday * (widget.cellHeight + 15.0));
     widget.onCalendarCreated?.call(_pageController);
 
     _previousIndex = initialPage;
@@ -207,7 +207,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
             valueListenable: _pageHeight,
             builder: (context, value, child) {
               final height =
-                  constraints.hasBoundedHeight ? double.infinity : value * 1.2;
+                  constraints.hasBoundedHeight ? double.infinity : value * 1.3;
               return AnimatedSize(
                 duration: widget.formatAnimationDuration,
                 curve: widget.formatAnimationCurve,
