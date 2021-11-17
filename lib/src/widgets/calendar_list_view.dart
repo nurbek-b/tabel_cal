@@ -18,6 +18,7 @@ class VerticalMonthView extends StatelessWidget {
   final List<DateTime> visibleDays;
   final DateTime? rangeMinDate;
   final DateTime? rangeMaxDate;
+  final double cellHeight;
 
   VerticalMonthView({
     required this.month,
@@ -25,6 +26,7 @@ class VerticalMonthView extends StatelessWidget {
     required this.maxDate,
     required this.dayBuilder,
     required this.visibleDays,
+    required this.cellHeight,
     this.monthTextStyle = const TextStyle(),
     this.dowDecoration,
     this.rowDecoration,
@@ -75,7 +77,7 @@ class VerticalMonthView extends StatelessWidget {
             day.isAfter(maxDate)) {
           return const SizedBox();
         } else {
-          return SizedBox(height: 60.0, child: dayBuilder(context, day));
+          return SizedBox(height: cellHeight, child: dayBuilder(context, day));
         }
       }, growable: false),
     );

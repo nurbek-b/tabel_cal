@@ -211,12 +211,15 @@ class TableCalendar<T> extends StatefulWidget {
 
   final List<DateTime> periodDays;
 
+  final double cellHeight;
+
   /// Creates a `TableCalendar` widget.
   TableCalendar({
     Key? key,
     required DateTime focusedDay,
     required DateTime firstDay,
     required DateTime lastDay,
+    this.cellHeight = 50.0,
     DateTime? currentDay,
     this.locale,
     this.rangeStartDay,
@@ -445,6 +448,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
             availableGestures: widget.availableGestures,
             firstDay: widget.firstDay,
             lastDay: widget.lastDay,
+            cellHeight: widget.cellHeight,
             months:
                 CustomDateUtils.extractWeeks(widget.firstDay, widget.lastDay),
             startingDayOfWeek: widget.startingDayOfWeek,

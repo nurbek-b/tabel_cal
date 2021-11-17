@@ -20,6 +20,7 @@ class TableCalendarBase extends StatefulWidget {
   final double rowHeight;
   final bool sixWeekMonthsEnforced;
   final bool dowVisible;
+  final double cellHeight;
   final TextStyle monthTextStyle;
   final TextStyle weekTextStyle;
   final Decoration? dowDecoration;
@@ -45,6 +46,7 @@ class TableCalendarBase extends StatefulWidget {
     required this.lastDay,
     required this.focusedDay,
     required this.months,
+    required this.cellHeight,
     this.calendarFormat = CalendarFormat.month,
     this.dowBuilder,
     required this.dayBuilder,
@@ -113,7 +115,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
 
     _pageController = PageController(initialPage: initialPage);
     _scrollController =
-        ScrollController(initialScrollOffset: weeksTillToday * 77.0);
+        ScrollController(initialScrollOffset: weeksTillToday * (widget.cellHeight + 10.0));
     widget.onCalendarCreated?.call(_pageController);
 
     _previousIndex = initialPage;
@@ -224,6 +226,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
               firstDay: widget.firstDay,
               lastDay: widget.lastDay,
               months: widget.months,
+              cellHeight: widget.cellHeight,
               monthTextStyle: widget.monthTextStyle,
               weekTextStyle: widget.weekTextStyle,
               startingDayOfWeek: widget.startingDayOfWeek,
