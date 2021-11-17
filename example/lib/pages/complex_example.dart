@@ -138,6 +138,7 @@ class _TableComplexExampleState extends State<TableComplexExample> {
             rangeEndDecoration: const BoxDecoration(color: Colors.transparent),
           ),
           calendarBuilders: CalendarBuilders(
+          
             singleMarkerBuilder: (context, date, data) {
               final children = <Widget>[];
               if (data.periodDays) if (!children

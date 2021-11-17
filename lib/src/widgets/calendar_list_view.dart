@@ -45,11 +45,10 @@ class VerticalMonthView extends StatelessWidget {
       children: <Widget>[
         monthBuilder != null
             ? monthBuilder!(context, month.month, month.year)
-            :
-        _DefaultMonthView(
-            month: month.month,
-            year: month.year,
-            monthTextStyle: monthTextStyle),
+            : _DefaultMonthView(
+                month: month.month,
+                year: month.year,
+                monthTextStyle: monthTextStyle),
         Table(
           children: month.weeks
               .map((Week week) => _generateFor(context, week))
@@ -76,7 +75,7 @@ class VerticalMonthView extends StatelessWidget {
             day.isAfter(maxDate)) {
           return const SizedBox();
         } else {
-          return dayBuilder(context, day);
+          return SizedBox(height: 65.0, child: dayBuilder(context, day));
         }
       }, growable: false),
     );
