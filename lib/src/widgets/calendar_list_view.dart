@@ -75,7 +75,7 @@ class VerticalMonthView extends StatelessWidget {
             day.isAfter(maxDate)) {
           return const SizedBox();
         } else {
-          return SizedBox(height: 65.0, child: dayBuilder(context, day));
+          return SizedBox(height: 60.0, child: dayBuilder(context, day));
         }
       }, growable: false),
     );
