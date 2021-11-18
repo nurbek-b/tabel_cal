@@ -39,7 +39,7 @@ void main() {
               dowVisible: false,
               months: CustomDateUtils.extractWeeks(DateTime.utc(2021, 5, 15), DateTime.utc(2021, 8, 18)),
               calendarFormat: CalendarFormat.month,
-              startingDayOfWeek: StartingDayOfWeek.sunday,
+              startingDayOfWeek: StartingDayOfWeek.sunday, cellHeight: 65,
             ),
           ),
         );
@@ -76,6 +76,7 @@ void main() {
               firstDay: DateTime.utc(2021, 5, 15),
               lastDay: DateTime.utc(2021, 8, 18),
               focusedDay: focusedDay,
+              cellHeight: 65,
               dayBuilder: (context, day, focusedDay) {
                 return Text(
                   '${day.day}',
@@ -123,6 +124,7 @@ void main() {
               firstDay: DateTime.utc(2021, 5, 15),
               lastDay: DateTime.utc(2021, 8, 18),
               focusedDay: focusedDay,
+              cellHeight: 65,
               dayBuilder: (context, day, focusedDay) {
                 return Text(
                   '${day.day}',
@@ -170,6 +172,7 @@ void main() {
               firstDay: DateTime.utc(2021, 5, 15),
               lastDay: DateTime.utc(2021, 8, 18),
               focusedDay: focusedDay,
+              cellHeight: 65,
               dayBuilder: (context, day, focusedDay) {
                 return Text(
                   '${day.day}',
@@ -217,6 +220,7 @@ void main() {
               firstDay: DateTime.utc(2021, 5, 15),
               lastDay: DateTime.utc(2021, 8, 18),
               focusedDay: focusedDay,
+              cellHeight: 65,
               dayBuilder: (context, day, focusedDay) {
                 return Text(
                   '${day.day}',
@@ -264,6 +268,7 @@ void main() {
               firstDay: DateTime.utc(2021, 5, 15),
               lastDay: DateTime.utc(2021, 8, 18),
               focusedDay: focusedDay,
+              cellHeight: 65,
               dayBuilder: (context, day, focusedDay) {
                 return Text(
                   '${day.day}',
@@ -316,6 +321,7 @@ void main() {
             firstDay: DateTime.utc(2021, 5, 15),
             lastDay: DateTime.utc(2021, 8, 18),
             focusedDay: focusedDay,
+            cellHeight: 65,
             dayBuilder: (context, day, focusedDay) {
               return Text(
                 '${day.day}',
@@ -368,6 +374,7 @@ void main() {
               firstDay: DateTime.utc(2021, 5, 15),
               lastDay: DateTime.utc(2021, 8, 18),
               focusedDay: DateTime.utc(2021, 7, 15),
+              cellHeight: 65,
               dayBuilder: (context, day, focusedDay) {
                 return Text(
                   '${day.day}',

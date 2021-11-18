@@ -106,7 +106,8 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
         ? _getRowCount(widget.calendarFormat, _focusedDay)
         : _getRowCount(widget.calendarFormat, _focusedDay) * 2;
 
-    final weeksTillToday = _getWeekCount(widget.firstDay, widget.focusedDay);
+    final _weeksTillToday = _getWeekCount(widget.firstDay, widget.focusedDay);
+    final _monthTillToday = _getMonthCount(widget.firstDay, widget.focusedDay)
 
     _pageHeight = ValueNotifier(_getPageHeight(rowCount));
 
@@ -115,7 +116,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
 
     _pageController = PageController(initialPage: initialPage);
     _scrollController =
-        ScrollController(initialScrollOffset: weeksTillToday * (widget.cellHeight + 15.0));
+        ScrollController(initialScrollOffset: (_weeksTillToday * widget.cellHeight)+(widget.cellHeight + _monthTillToday));
     widget.onCalendarCreated?.call(_pageController);
 
     _previousIndex = initialPage;
