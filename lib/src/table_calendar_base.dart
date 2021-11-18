@@ -117,7 +117,7 @@ class _TableCalendarBaseState extends State<TableCalendarBase>
     _pageController = PageController(initialPage: initialPage);
     _scrollController = ScrollController(
         initialScrollOffset: (_weeksTillToday * widget.cellHeight) +
-            (widget.cellHeight + _monthTillToday + 3));
+            (widget.cellHeight * _monthTillToday));
     widget.onCalendarCreated?.call(_pageController);
 
     _previousIndex = initialPage;
